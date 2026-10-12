@@ -52,7 +52,8 @@ Le nom du service Compose est web.
 Étape 8 terminée : colonne nodes.search_text (texte brut sans accents ni majuscules, recalculé à chaque changement de titre ou de contenu par src/db/mutations.ts), recherche LIKE dans searchPages (src/db/queries.ts) exposée par GET /api/search, palette Cmd+K (src/components/SearchPalette.tsx, montée dans le layout), vue /boite-a-outils (racine repérée par TOOLBOX_TITLE dans src/lib/constants.ts). Après une restauration ou un import de base, lancer npx tsx src/db/migrate-content.ts pour recalculer search_text.
 Étape 9 terminée : export PDF par la feuille de style @media print (fin de src/app/globals.css) et le bouton Exporter de PageEditor (window.print, le titre de la page devient le nom du fichier). Pas de Chromium côté serveur.
 Piège récurrent (étapes 6, 7, 9) : après une modification de globals.css, les nouvelles règles n'apparaissent dans le CSS compilé du serveur de dev qu'après une seconde modification du fichier (par exemple changer un commentaire). Toujours vérifier avec curl sur le fichier CSS servi.
-Étape 10 non commencée.
+Étape 10 terminée : Dockerfile de production (3 étapes, output standalone, npm ci --ignore-scripts car better-sqlite3 a des binaires précompilés), compose.prod.yaml (volume ./data, restart: unless-stopped, healthcheck /api/health), update.sh (git pull + rebuild), scripts/docker-entrypoint.sh (droits sur data/ puis utilisateur node). Au démarrage, src/instrumentation.ts appelle src/db/prepare.ts : crée data/, applique les migrations, crée les racines Cours et Boîte à outils si la base est neuve. Export Markdown : GET /api/export/[id] (page en .md, dossier en .zip avec fflate), convertisseur src/lib/markdown.ts. Projets Compose distincts : plume (prod) et plume-dev (dev). Pas de sauvegarde automatique : décision de l'utilisateur, il exporte lui-même. README.md décrit le déploiement.
+Étape 11 : plus tard (non commencée).
 5. Étapes
 Étape 2 : base de données
 

@@ -63,11 +63,17 @@ export function TreeView({
   return (
     <div>
       <Branch nodes={nodes} shared={shared} />
-      <AddButtons
-        parentId={rootId}
-        shared={shared}
-        className="mt-2 text-sm text-foreground/30"
-      />
+      <div className="mt-2 flex items-center gap-1 text-sm text-foreground/30">
+        <AddButtons parentId={rootId} shared={shared} />
+        <a
+          href={`/api/export/${rootId}`}
+          download
+          title="Tout exporter en .zip (Markdown)"
+          className={`${actionButton} ml-auto`}
+        >
+          ⤓ tout exporter
+        </a>
+      </div>
       {error && (
         <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
           {error}
@@ -236,6 +242,15 @@ function Row({
               </option>
             ))}
           </select>
+          <a
+            href={`/api/export/${node.id}`}
+            download
+            aria-label={isFolder ? "Exporter le dossier en .zip" : "Exporter en Markdown"}
+            title={isFolder ? "Exporter en .zip (Markdown)" : "Exporter en Markdown"}
+            className={actionButton}
+          >
+            ⤓
+          </a>
           <button
             type="button"
             onClick={remove}

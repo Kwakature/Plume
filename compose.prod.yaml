@@ -1,0 +1,26 @@
+# Production (Raspberry) :
+#   docker compose -f compose.prod.yaml up -d --build
+# Mise à jour : ./update.sh
+name: plume
+
+services:
+  web:
+    build: .
+    image: plume:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      # Les données restent sur le Raspberry, hors de l'image : une mise à jour
+      # ou une reconstruction n'y touche pas.
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

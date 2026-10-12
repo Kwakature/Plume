@@ -199,6 +199,15 @@ function ActionBar({
         >
           Exporter
         </button>
+        {/* Téléchargement du texte de la page en Markdown. */}
+        <a
+          href={`/api/export/${id}`}
+          download
+          title="Exporter en Markdown"
+          className="hover:text-foreground"
+        >
+          Markdown
+        </a>
         <span
           role="status"
           className={isError ? "text-red-600 dark:text-red-400" : "text-foreground/40"}

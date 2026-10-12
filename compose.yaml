@@ -1,3 +1,9 @@
+# Développement (rechargement à chaud) :
+#   docker compose up --build
+# Le nom du projet est distinct de la production (compose.prod.yaml) pour que
+# les deux ne se remplacent pas l'un l'autre sur la même machine.
+name: plume-dev
+
 services:
   web:
     build:

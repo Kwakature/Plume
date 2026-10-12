@@ -59,7 +59,7 @@ Chaque étape a un résultat visible. Tu écris le code toi-même, je guide et j
 - [x] **7. Blocs de code** : coloration, choix du langage, bouton copier, police IDE. *Apprendre* : extensions Tiptap personnalisées.
 - [x] **8. Boîte à outils** : fiches de référence, recherche rapide. *Apprendre* : recherche plein texte SQLite.
 - [x] **9. Export PDF** : une page à la fois, même mise en forme. *Apprendre* : CSS d'impression, génération de PDF.
-- [ ] **10. Déploiement et sauvegarde** : image de production, déploiement sur le Raspberry, export Markdown, sauvegarde vers le NAS. *Apprendre* : build multi-arch, volumes, cron.
+- [x] **10. Déploiement et sauvegarde** : image de production, déploiement sur le Raspberry, export Markdown. Sauvegarde automatique vers le NAS non retenue : l'utilisateur exporte lui-même ses notes. *Apprendre* : build multi-arch, volumes, cron.
 - [ ] **11. Plus tard** : images, schémas Mermaid, tags, thème clair/sombre, raccourcis clavier, palette de commandes.
 
 ## Étape 1 en détail
