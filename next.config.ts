@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Le build produit un dossier .next/standalone autonome (serveur Node minimal),
+  // c'est ce qu'embarque l'image de production.
+  output: "standalone",
   experimental: {
     agentFeedback: true,
   },

@@ -1,3 +1,7 @@
 node_modules
 .next
 .git
+data
+*.md
+Dockerfile*
+compose*.yaml

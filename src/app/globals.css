@@ -1,0 +1,225 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Contenu de l editeur Tiptap */
+.tiptap {
+  font-size: 1.125rem;
+  line-height: 2rem;
+}
+.tiptap > * + * {
+  margin-top: 0.75rem;
+}
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  font-family: var(--font-geist-mono), monospace;
+  line-height: 1.3;
+  margin-top: 1.75rem;
+}
+.tiptap h1 { font-size: 1.875rem; }
+.tiptap h2 { font-size: 1.5rem; }
+.tiptap h3 { font-size: 1.25rem; }
+.tiptap ul { list-style: disc; padding-left: 1.5rem; }
+.tiptap ol { list-style: decimal; padding-left: 1.5rem; }
+.tiptap li > * + * { margin-top: 0.25rem; }
+.tiptap blockquote {
+  border-left: 2px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  padding-left: 1rem;
+  opacity: 0.8;
+}
+.tiptap code,
+.tiptap pre {
+  font-family: var(--font-geist-mono), monospace;
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+.tiptap code {
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+}
+.tiptap pre {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+.tiptap pre code {
+  background: none;
+  padding: 0;
+}
+.tiptap hr {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
+  margin: 1.5rem 0;
+}
+
+/* Bloc de code - barre d outils au survol */
+.tiptap .code-block {
+  position: relative;
+}
+.tiptap .code-block-toolbar {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.tiptap .code-block-toolbar select,
+.tiptap .code-block-toolbar button {
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+  background: color-mix(in srgb, var(--foreground) 8%, var(--background));
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+.tiptap .code-block-toolbar select:hover,
+.tiptap .code-block-toolbar button:hover {
+  color: var(--foreground);
+}
+
+/* Coloration syntaxique (classes de highlight.js), claire et sombre */
+:root {
+  --hl-keyword: #8250df;
+  --hl-string: #0a7a3e;
+  --hl-number: #b35900;
+  --hl-comment: #6e7781;
+  --hl-title: #0550ae;
+  --hl-variable: #c2410c;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hl-keyword: #c792ea;
+    --hl-string: #a5d6a7;
+    --hl-number: #f7b267;
+    --hl-comment: #7d8590;
+    --hl-title: #82aaff;
+    --hl-variable: #ff9e80;
+  }
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag,
+.hljs-meta .hljs-keyword {
+  color: var(--hl-keyword);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-meta .hljs-string {
+  color: var(--hl-string);
+}
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--hl-number);
+}
+.hljs-comment,
+.hljs-quote {
+  color: var(--hl-comment);
+  font-style: italic;
+}
+.hljs-title,
+.hljs-section,
+.hljs-built_in,
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-name,
+.hljs-attr {
+  color: var(--hl-title);
+}
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-params,
+.hljs-deletion {
+  color: var(--hl-variable);
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* Impression et export PDF - on ne garde que le texte, en clair */
+@page {
+  margin: 18mm;
+}
+@media print {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --hl-keyword: #8250df;
+    --hl-string: #0a7a3e;
+    --hl-number: #b35900;
+    --hl-comment: #6e7781;
+    --hl-title: #0550ae;
+    --hl-variable: #c2410c;
+  }
+  body {
+    background: #ffffff;
+    color: #171717;
+  }
+  nextjs-portal {
+    display: none !important;
+  }
+  .tiptap {
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+  .tiptap h1,
+  .tiptap h2,
+  .tiptap h3 {
+    break-after: avoid;
+  }
+  .tiptap pre,
+  .tiptap blockquote,
+  .tiptap li {
+    break-inside: avoid;
+  }
+  .tiptap pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow: visible;
+    border: 1px solid #dddddd;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .tiptap code {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
