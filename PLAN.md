@@ -52,7 +52,7 @@ Chaque étape a un résultat visible. Tu écris le code toi-même, je guide et j
 
 - [x] **1. Fondations** : Docker Compose, projet Next.js en TypeScript, rechargement en direct. *Apprendre* : Docker en dev, structure d'un projet.
 - [x] **2. Base de données** : SQLite + Drizzle, table `nodes`, données de test. *Apprendre* : typage des données, migrations.
-- [ ] **3. Page d'accueil** : arbre années/matières/groupes, favoris. *Apprendre* : composants React, routes, données côté serveur.
+- [x] **3. Page d'accueil** : arbre années/matières/groupes, favoris. *Apprendre* : composants React, routes, données côté serveur.
 - [ ] **4. CRUD de l'arborescence** : créer, renommer, déplacer, supprimer. *Apprendre* : server actions, formulaires, validation.
 - [ ] **5. Page d'écriture minimaliste** : texte seul, barre d'actions au survol en haut à gauche. *Apprendre* : interactions, premières animations.
 - [ ] **6. Éditeur Tiptap** : Markdown en direct, titres, listes, sauvegarde automatique. *Apprendre* : ProseMirror, état de l'éditeur, debounce.

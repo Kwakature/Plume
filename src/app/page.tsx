@@ -1,26 +1,69 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { io } from "next/cache";
-import { db } from "@/db";
-import { nodes } from "@/db/schema";
+import { getFavorites, getTree } from "@/db/queries";
+import { TreeView } from "@/components/TreeView";
 
-// Page temporaire (étape 2) : affiche le contenu brut de la table nodes.
 export default function Home() {
   return (
-    <main className="p-8">
-      <h1 className="mb-4 text-2xl">Mes cours</h1>
-      <Suspense fallback={<p>Chargement…</p>}>
-        <NodesJson />
+    <main className="mx-auto w-full max-w-xl px-6 py-16">
+      <h1 className="mb-12 font-mono text-2xl">Mes cours</h1>
+      <Suspense fallback={<p className="text-foreground/40">Chargement…</p>}>
+        <HomeContent />
       </Suspense>
     </main>
   );
 }
 
-async function NodesJson() {
-  // better-sqlite3 est synchrone : io() indique à Next.js de lire la base
-  // à chaque requête plutôt que de figer le résultat au build.
+async function HomeContent() {
+  // better-sqlite3 est synchrone : io() force la lecture à chaque requête
+  // plutôt que de figer le résultat au build.
   await io();
-  const rows = db.select().from(nodes).all();
+  const favorites = getFavorites();
+  const roots = getTree();
+
   return (
-    <pre className="text-sm">{JSON.stringify(rows, null, 2)}</pre>
+    <div className="space-y-12">
+      {favorites.length > 0 && (
+        <Section title="Favoris">
+          <ul className="space-y-1">
+            {favorites.map((node) => (
+              <li key={node.id}>
+                <Link
+                  href={`/page/${node.id}`}
+                  className="text-foreground/80 hover:text-foreground hover:underline"
+                >
+                  {node.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      {/* Chaque racine (Cours, Boîte à outils) est une section distincte. */}
+      {roots.map((root) => (
+        <Section key={root.id} title={root.title}>
+          <TreeView nodes={root.children} />
+        </Section>
+      ))}
+    </div>
+  );
+}
+
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section>
+      <h2 className="mb-3 font-mono text-xs uppercase tracking-widest text-foreground/50">
+        {title}
+      </h2>
+      {children}
+    </section>
   );
 }
