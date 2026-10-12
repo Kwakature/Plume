@@ -1,9 +1,13 @@
 import { db } from "./index";
 import { nodes, type NewNode } from "./schema";
+import { buildSearchText } from "../lib/content";
 
 // Insère une ligne et renvoie son id, pour pouvoir y rattacher des enfants.
 function insert(node: NewNode): number {
-  const [row] = db.insert(nodes).values(node).returning({ id: nodes.id }).all();
+  const [row] = db
+    .insert(nodes)
+    .values({ ...node, searchText: buildSearchText(node.title, node.content) })
+    .returning({ id: nodes.id }).all();
   return row.id;
 }
 

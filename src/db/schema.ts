@@ -19,6 +19,9 @@ export const nodes = sqliteTable("nodes", {
   title: text("title").notNull(),
   // Contenu de la page (JSON Tiptap à partir de l'étape 6).
   content: text("content", { mode: "json" }),
+  // Texte brut du titre et du contenu, sans accents ni majuscules, pour la
+  // recherche. Recalculé à chaque changement de titre ou de contenu.
+  searchText: text("search_text").notNull().default(""),
   position: integer("position").notNull().default(0),
   isFavorite: integer("is_favorite", { mode: "boolean" })
     .notNull()

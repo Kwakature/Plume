@@ -36,3 +36,27 @@ export function isDoc(value: unknown): value is JSONContent {
     (value as { type?: unknown }).type === "doc"
   );
 }
+
+// Blocs dont les enfants sont eux-mêmes des blocs : on les sépare par un
+// saut de ligne. Les autres (paragraphe, titre, bloc de code) contiennent
+// du texte en ligne, qu'on recolle tel quel.
+const containerTypes = new Set(["doc", "bulletList", "orderedList", "listItem", "blockquote"]);
+
+// Texte brut d'un document Tiptap (sans mise en forme).
+export function docToText(node: JSONContent): string {
+  if (node.type === "text") return node.text ?? "";
+  if (node.type === "hardBreak") return "\n";
+  const children = (node.content ?? []).map(docToText);
+  return children.join(containerTypes.has(node.type ?? "") ? "\n" : "");
+}
+
+// Met un texte sous une forme comparable : minuscules et sans accents,
+// pour que « ecole » retrouve « École ».
+export function normalizeForSearch(text: string): string {
+  return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+}
+
+// Texte stocké dans la colonne search_text d'un élément.
+export function buildSearchText(title: string, content: unknown): string {
+  return normalizeForSearch(`${title}\n${docToText(toDoc(content))}`);
+}

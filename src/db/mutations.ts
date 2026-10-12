@@ -2,6 +2,7 @@ import { asc, eq, isNull, max } from "drizzle-orm";
 import { db } from "./index";
 import { nodes } from "./schema";
 import { getNode } from "./queries";
+import { buildSearchText } from "../lib/content";
 
 // Ces fonctions modifient la base. Quand une règle est violée, elles lèvent
 // une Error avec un message en français, affichable tel quel dans l'interface.
@@ -39,16 +40,24 @@ export function createNode(input: {
   getFolderOrThrow(input.parentId);
   const [row] = db
     .insert(nodes)
-    .values({ ...input, position: nextPosition(input.parentId) })
+    .values({
+      ...input,
+      searchText: buildSearchText(input.title, null),
+      position: nextPosition(input.parentId),
+    })
     .returning({ id: nodes.id })
     .all();
   return row.id;
 }
 
 export function renameNode(id: number, title: string) {
-  getOrThrow(id);
+  const node = getOrThrow(id);
   db.update(nodes)
-    .set({ title, updatedAt: new Date() })
+    .set({
+      title,
+      searchText: buildSearchText(title, node.content),
+      updatedAt: new Date(),
+    })
     .where(eq(nodes.id, id))
     .run();
 }
@@ -125,7 +134,11 @@ export function setPageContent(id: number, content: unknown) {
     throw new Error("Seule une page peut avoir du contenu.");
   }
   db.update(nodes)
-    .set({ content, updatedAt: new Date() })
+    .set({
+      content,
+      searchText: buildSearchText(node.title, content),
+      updatedAt: new Date(),
+    })
     .where(eq(nodes.id, id))
     .run();
 }
