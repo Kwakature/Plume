@@ -34,6 +34,24 @@ export function getTree(): TreeNode[] {
   return roots;
 }
 
+// Un dossier avec son chemin lisible (« Cours / Année 1 »), pour le menu « déplacer ».
+export type FolderOption = { id: number; label: string };
+
+export function flattenFolders(
+  nodes: TreeNode[],
+  prefix = "",
+): FolderOption[] {
+  return nodes
+    .filter((node) => node.type === "folder")
+    .flatMap((node) => {
+      const label = prefix + node.title;
+      return [
+        { id: node.id, label },
+        ...flattenFolders(node.children, `${label} / `),
+      ];
+    });
+}
+
 export function getFavorites(): Node[] {
   return db
     .select()

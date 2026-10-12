@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { io } from "next/cache";
-import { getFavorites, getTree } from "@/db/queries";
+import { flattenFolders, getFavorites, getTree } from "@/db/queries";
 import { TreeView } from "@/components/TreeView";
 
 export default function Home() {
@@ -21,6 +21,7 @@ async function HomeContent() {
   await io();
   const favorites = getFavorites();
   const roots = getTree();
+  const folders = flattenFolders(roots);
 
   return (
     <div className="space-y-12">
@@ -44,7 +45,7 @@ async function HomeContent() {
       {/* Chaque racine (Cours, Boîte à outils) est une section distincte. */}
       {roots.map((root) => (
         <Section key={root.id} title={root.title}>
-          <TreeView nodes={root.children} />
+          <TreeView nodes={root.children} rootId={root.id} folders={folders} />
         </Section>
       ))}
     </div>
