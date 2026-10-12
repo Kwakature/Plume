@@ -8,6 +8,7 @@ import {
   moveNode,
   renameNode,
   reorderNode,
+  setPageContent,
   toggleFavorite,
 } from "@/db/mutations";
 
@@ -88,5 +89,13 @@ export async function reorderNodeAction(id: number, direction: "up" | "down") {
     z.object({ id: idSchema, direction: z.enum(["up", "down"]) }),
     { id, direction },
     (d) => reorderNode(d.id, d.direction),
+  );
+}
+
+export async function saveContentAction(id: number, text: string) {
+  return run(
+    z.object({ id: idSchema, text: z.string().max(500_000, "Le texte est trop long.") }),
+    { id, text },
+    (d) => setPageContent(d.id, d.text),
   );
 }

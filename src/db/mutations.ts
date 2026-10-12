@@ -117,3 +117,16 @@ export function reorderNode(id: number, direction: "up" | "down") {
     });
   });
 }
+
+// Enregistre le texte d'une page. Provisoire (étape 5) : du texte brut,
+// remplacé par du JSON Tiptap à l'étape 6.
+export function setPageContent(id: number, text: string) {
+  const node = getOrThrow(id);
+  if (node.type !== "page") {
+    throw new Error("Seule une page peut avoir du contenu.");
+  }
+  db.update(nodes)
+    .set({ content: text, updatedAt: new Date() })
+    .where(eq(nodes.id, id))
+    .run();
+}

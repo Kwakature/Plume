@@ -54,7 +54,7 @@ Chaque étape a un résultat visible. Tu écris le code toi-même, je guide et j
 - [x] **2. Base de données** : SQLite + Drizzle, table `nodes`, données de test. *Apprendre* : typage des données, migrations.
 - [x] **3. Page d'accueil** : arbre années/matières/groupes, favoris. *Apprendre* : composants React, routes, données côté serveur.
 - [x] **4. CRUD de l'arborescence** : créer, renommer, déplacer, supprimer. *Apprendre* : server actions, formulaires, validation.
-- [ ] **5. Page d'écriture minimaliste** : texte seul, barre d'actions au survol en haut à gauche. *Apprendre* : interactions, premières animations.
+- [x] **5. Page d'écriture minimaliste** : texte seul, barre d'actions au survol en haut à gauche. *Apprendre* : interactions, premières animations.
 - [ ] **6. Éditeur Tiptap** : Markdown en direct, titres, listes, sauvegarde automatique. *Apprendre* : ProseMirror, état de l'éditeur, debounce.
 - [ ] **7. Blocs de code** : coloration, choix du langage, bouton copier, police IDE. *Apprendre* : extensions Tiptap personnalisées.
 - [ ] **8. Boîte à outils** : fiches de référence, recherche rapide. *Apprendre* : recherche plein texte SQLite.
