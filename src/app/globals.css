@@ -173,3 +173,53 @@ body {
 .hljs-strong {
   font-weight: 700;
 }
+
+/* Impression et export PDF - on ne garde que le texte, en clair */
+@page {
+  margin: 18mm;
+}
+@media print {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --hl-keyword: #8250df;
+    --hl-string: #0a7a3e;
+    --hl-number: #b35900;
+    --hl-comment: #6e7781;
+    --hl-title: #0550ae;
+    --hl-variable: #c2410c;
+  }
+  body {
+    background: #ffffff;
+    color: #171717;
+  }
+  nextjs-portal {
+    display: none !important;
+  }
+  .tiptap {
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+  .tiptap h1,
+  .tiptap h2,
+  .tiptap h3 {
+    break-after: avoid;
+  }
+  .tiptap pre,
+  .tiptap blockquote,
+  .tiptap li {
+    break-inside: avoid;
+  }
+  .tiptap pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow: visible;
+    border: 1px solid #dddddd;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .tiptap code {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

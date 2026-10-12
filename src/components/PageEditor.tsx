@@ -104,7 +104,7 @@ export function PageEditor({
     autofocus: "end",
     editorProps: {
       attributes: {
-        class: "tiptap min-h-[60vh] outline-none",
+        class: "tiptap min-h-[60vh] outline-none print:min-h-0",
         "aria-label": `Contenu de la page ${title}`,
       },
     },
@@ -116,26 +116,45 @@ export function PageEditor({
     <MotionConfig reducedMotion="user">
       <ActionBar
         id={id}
+        title={title}
         isFavorite={isFavorite}
         status={statusLabel[status]}
         isError={status === "error"}
       />
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-6 py-24">
-        <h1 className="mb-8 font-mono text-3xl">{title}</h1>
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-6 py-24 print:max-w-none print:p-0">
+        <h1 className="mb-8 font-mono text-3xl print:mb-6">{title}</h1>
         <EditorContent editor={editor} />
       </main>
     </MotionConfig>
   );
 }
 
+// Export PDF : on ouvre le dialogue d'impression du navigateur, où l'on choisit
+// « Enregistrer au format PDF ». La feuille de style @media print (globals.css)
+// masque l'interface. Le titre du document devient le nom du fichier proposé.
+function exportPdf(title: string) {
+  const previousTitle = document.title;
+  document.title = title;
+  window.addEventListener(
+    "afterprint",
+    () => {
+      document.title = previousTitle;
+    },
+    { once: true },
+  );
+  window.print();
+}
+
 // Barre d'actions : invisible tant qu'on ne survole pas le coin haut-gauche.
 function ActionBar({
   id,
+  title,
   isFavorite,
   status,
   isError,
 }: {
   id: number;
+  title: string;
   isFavorite: boolean;
   status: string;
   isError: boolean;
@@ -145,7 +164,7 @@ function ActionBar({
   return (
     // La zone de survol est toujours là (invisible) ; seule la barre s'anime.
     <div
-      className="fixed left-0 top-0 z-10 h-24 w-96 max-w-full p-6"
+      className="fixed left-0 top-0 z-10 h-24 w-96 max-w-full p-6 print:hidden"
       onPointerEnter={() => setShown(true)}
       onPointerLeave={() => setShown(false)}
       onFocus={() => setShown(true)}
@@ -172,12 +191,11 @@ function ActionBar({
         >
           {isFavorite ? "★" : "☆"}
         </button>
-        {/* Le vrai export PDF arrive à l'étape 9. */}
         <button
           type="button"
-          disabled
-          title="Bientôt disponible"
-          className="opacity-40"
+          onClick={() => exportPdf(title)}
+          title="Exporter en PDF"
+          className="hover:text-foreground"
         >
           Exporter
         </button>

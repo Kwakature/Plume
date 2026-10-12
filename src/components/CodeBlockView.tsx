@@ -46,7 +46,7 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
       {/* contentEditable=false : ces contrôles ne font pas partie du texte. */}
       <div
         contentEditable={false}
-        className="code-block-toolbar opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+        className="code-block-toolbar opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 print:hidden"
       >
         <select
           value={node.attrs.language ?? ""}

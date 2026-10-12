@@ -50,7 +50,9 @@ Le nom du service Compose est web.
 Étape 6 terminée : éditeur Tiptap dans src/components/PageEditor.tsx (StarterKit sans link ni underline), contenu stocké en JSON Tiptap, conversion du texte brut dans src/lib/content.ts (toDoc) et script src/db/migrate-content.ts, styles .tiptap dans globals.css (après une modification de globals.css, vérifier que les règles sont bien dans le CSS compilé : un ajout en fin de fichier n'a pas été pris en compte par le serveur de dev, une modification de contenu oui).
 Étape 7 terminée : blocs de code lowlight (src/lib/lowlight.ts, src/components/CodeBlockView.tsx) avec sélecteur de langage et bouton copier, coloration claire/sombre dans globals.css. Les attributs ProseMirror sont des objets sans prototype : PageEditor passe par JSON.parse(JSON.stringify()) avant d'appeler la server action, sinon React les supprime en silence.
 Étape 8 terminée : colonne nodes.search_text (texte brut sans accents ni majuscules, recalculé à chaque changement de titre ou de contenu par src/db/mutations.ts), recherche LIKE dans searchPages (src/db/queries.ts) exposée par GET /api/search, palette Cmd+K (src/components/SearchPalette.tsx, montée dans le layout), vue /boite-a-outils (racine repérée par TOOLBOX_TITLE dans src/lib/constants.ts). Après une restauration ou un import de base, lancer npx tsx src/db/migrate-content.ts pour recalculer search_text.
-Étape 9 non commencée.
+Étape 9 terminée : export PDF par la feuille de style @media print (fin de src/app/globals.css) et le bouton Exporter de PageEditor (window.print, le titre de la page devient le nom du fichier). Pas de Chromium côté serveur.
+Piège récurrent (étapes 6, 7, 9) : après une modification de globals.css, les nouvelles règles n'apparaissent dans le CSS compilé du serveur de dev qu'après une seconde modification du fichier (par exemple changer un commentaire). Toujours vérifier avec curl sur le fichier CSS servi.
+Étape 10 non commencée.
 5. Étapes
 Étape 2 : base de données
 
