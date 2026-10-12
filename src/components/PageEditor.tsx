@@ -3,8 +3,16 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { MotionConfig, motion } from "motion/react";
-import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
+import {
+  EditorContent,
+  ReactNodeViewRenderer,
+  useEditor,
+  type JSONContent,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { CodeBlockView } from "@/components/CodeBlockView";
+import { lowlight } from "@/lib/lowlight";
 import { saveContentAction, toggleFavoriteAction } from "@/app/actions";
 
 type SaveStatus = "saved" | "dirty" | "saving" | "error";
@@ -15,6 +23,14 @@ const statusLabel: Record<SaveStatus, string> = {
   saving: "Enregistrement…",
   error: "Échec de l'enregistrement",
 };
+
+// Bloc de code coloré par lowlight, affiché avec notre composant React
+// (sélecteur de langage, bouton copier) au lieu du <pre> par défaut.
+const CodeBlock = CodeBlockLowlight.extend({
+  addNodeView() {
+    return ReactNodeViewRenderer(CodeBlockView);
+  },
+}).configure({ lowlight });
 
 // Délai après la dernière frappe avant d'enregistrer.
 const SAVE_DELAY_MS = 800;
@@ -51,7 +67,11 @@ export function PageEditor({
   }
 
   function onContentChange(content: JSONContent) {
-    latestContent.current = content;
+    // Les attributs des nœuds ProseMirror sont des objets sans prototype ;
+    // React ne les transmet pas à une server action (ils disparaissaient en
+    // silence, par exemple le langage d'un bloc de code). Passer par du JSON
+    // texte donne des objets simples.
+    latestContent.current = JSON.parse(JSON.stringify(content));
     dirty.current = true;
     setStatus("dirty");
     clearTimeout(timer.current);
@@ -75,8 +95,10 @@ export function PageEditor({
     immediatelyRender: false,
     extensions: [
       // StarterKit contient les raccourcis Markdown (#, -, 1., >, ```, `…).
-      // Liens et soulignement ne sont pas demandés : on les retire.
-      StarterKit.configure({ link: false, underline: false }),
+      // Son bloc de code est remplacé par CodeBlock ; liens et soulignement
+      // ne sont pas demandés : on les retire.
+      StarterKit.configure({ codeBlock: false, link: false, underline: false }),
+      CodeBlock,
     ],
     content: initialContent,
     autofocus: "end",
