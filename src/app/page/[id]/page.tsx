@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { io } from "next/cache";
 import { getNode } from "@/db/queries";
 import { PageEditor } from "@/components/PageEditor";
+import { toDoc } from "@/lib/content";
 
 export default function NodePage({ params }: PageProps<"/page/[id]">) {
   return (
@@ -30,14 +31,14 @@ async function NodeContent({ params }: { params: PageProps<"/page/[id]">["params
     );
   }
 
-  // `content` est du JSON : à l'étape 5 c'est une simple chaîne (ou null si vide).
-  const text = typeof node.content === "string" ? node.content : "";
+  // Convertit si besoin l'ancien texte brut (étape 5) en document Tiptap.
+  const content = toDoc(node.content);
 
   return (
     <PageEditor
       id={node.id}
       title={node.title}
-      initialText={text}
+      initialContent={content}
       isFavorite={node.isFavorite}
     />
   );

@@ -92,10 +92,14 @@ export async function reorderNodeAction(id: number, direction: "up" | "down") {
   );
 }
 
-export async function saveContentAction(id: number, text: string) {
-  return run(
-    z.object({ id: idSchema, text: z.string().max(500_000, "Le texte est trop long.") }),
-    { id, text },
-    (d) => setPageContent(d.id, d.text),
+// Un document Tiptap : un objet { type: "doc", content: [...] }.
+// On vérifie la racine et la taille, pas chaque nœud (Tiptap s'en charge).
+const docSchema = z
+  .looseObject({ type: z.literal("doc") })
+  .refine((doc) => JSON.stringify(doc).length <= 2_000_000, "Le texte est trop long.");
+
+export async function saveContentAction(id: number, content: unknown) {
+  return run(z.object({ id: idSchema, content: docSchema }), { id, content }, (d) =>
+    setPageContent(d.id, d.content),
   );
 }

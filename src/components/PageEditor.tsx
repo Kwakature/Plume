@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { MotionConfig, motion } from "motion/react";
+import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { saveContentAction, toggleFavoriteAction } from "@/app/actions";
 
 type SaveStatus = "saved" | "dirty" | "saving" | "error";
@@ -20,17 +22,17 @@ const SAVE_DELAY_MS = 800;
 export function PageEditor({
   id,
   title,
-  initialText,
+  initialContent,
   isFavorite,
 }: {
   id: number;
   title: string;
-  initialText: string;
+  initialContent: JSONContent;
   isFavorite: boolean;
 }) {
-  // Dernière valeur tapée : on ne lit pas le <textarea> au moment d'enregistrer,
-  // car en quittant la page React l'a déjà détaché.
-  const latestText = useRef(initialText);
+  // Dernier contenu édité : on ne le relit pas dans l'éditeur au moment
+  // d'enregistrer, car en quittant la page React l'a déjà détruit.
+  const latestContent = useRef<JSONContent>(initialContent);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const dirty = useRef(false);
   const [status, setStatus] = useState<SaveStatus>("saved");
@@ -40,7 +42,7 @@ export function PageEditor({
     if (!dirty.current) return;
     dirty.current = false;
     setStatus("saving");
-    const result = await saveContentAction(id, latestText.current);
+    const result = await saveContentAction(id, latestContent.current);
     if (!result.ok) dirty.current = true; // on retentera à la prochaine frappe
     // Si l'utilisateur a retapé pendant l'envoi, on reste sur « Modifié ».
     setStatus((current) =>
@@ -48,8 +50,8 @@ export function PageEditor({
     );
   }
 
-  function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    latestText.current = e.currentTarget.value;
+  function onContentChange(content: JSONContent) {
+    latestContent.current = content;
     dirty.current = true;
     setStatus("dirty");
     clearTimeout(timer.current);
@@ -57,12 +59,36 @@ export function PageEditor({
   }
 
   // Quitter la page avant la fin du délai ne doit pas perdre la dernière frappe.
-  // On garde save dans une ref pour que le nettoyage appelle toujours la version à jour.
+  // On garde ces fonctions dans des refs pour que l'éditeur et le nettoyage
+  // appellent toujours la version à jour.
   const saveRef = useRef(save);
+  const changeRef = useRef(onContentChange);
   useEffect(() => {
     saveRef.current = save;
+    changeRef.current = onContentChange;
   });
   useEffect(() => () => void saveRef.current(), []);
+
+  const editor = useEditor({
+    // Tiptap rend l'éditeur côté client uniquement : sans cela, le HTML du
+    // serveur et celui du navigateur diffèrent (erreur d'hydratation).
+    immediatelyRender: false,
+    extensions: [
+      // StarterKit contient les raccourcis Markdown (#, -, 1., >, ```, `…).
+      // Liens et soulignement ne sont pas demandés : on les retire.
+      StarterKit.configure({ link: false, underline: false }),
+    ],
+    content: initialContent,
+    autofocus: "end",
+    editorProps: {
+      attributes: {
+        class: "tiptap min-h-[60vh] outline-none",
+        "aria-label": `Contenu de la page ${title}`,
+      },
+    },
+    onUpdate: ({ editor }) => changeRef.current(editor.getJSON()),
+    onBlur: () => void saveRef.current(),
+  });
 
   return (
     <MotionConfig reducedMotion="user">
@@ -74,15 +100,7 @@ export function PageEditor({
       />
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-6 py-24">
         <h1 className="mb-8 font-mono text-3xl">{title}</h1>
-        <textarea
-          defaultValue={initialText}
-          onChange={onChange}
-          onBlur={save}
-          autoFocus
-          spellCheck
-          aria-label={`Contenu de la page ${title}`}
-          className="min-h-[60vh] w-full flex-1 resize-none bg-transparent text-lg leading-8 outline-none field-sizing-content"
-        />
+        <EditorContent editor={editor} />
       </main>
     </MotionConfig>
   );

@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/react": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
     "motion": "^14.1.0",

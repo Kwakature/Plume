@@ -47,7 +47,8 @@ Le nom du service Compose est web.
 Étape 3 terminée : accueil avec arbre repliable (src/components/TreeView.tsx), favoris, requêtes dans src/db/queries.ts, route /page/[id] qui affiche le titre.
 Étape 4 terminée : server actions (src/app/actions.ts, validation zod), logique dans src/db/mutations.ts (anti-cycle), arbre interactif dans src/components/TreeView.tsx. DATABASE_PATH permet de tester sur une base copie.
 Étape 5 terminée : page d'écriture (src/components/PageEditor.tsx), barre d'actions au survol animée avec Motion, sauvegarde automatique du texte brut (debounce 800 ms, flush au blur et au démontage).
-Étape 6 non commencée.
+Étape 6 terminée : éditeur Tiptap dans src/components/PageEditor.tsx (StarterKit sans link ni underline), contenu stocké en JSON Tiptap, conversion du texte brut dans src/lib/content.ts (toDoc) et script src/db/migrate-content.ts, styles .tiptap dans globals.css (pas d accents dans les commentaires CSS : ils faisaient ignorer les règles).
+Étape 7 non commencée.
 5. Étapes
 Étape 2 : base de données
 
