@@ -17,6 +17,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NODE_OPTIONS=--max-old-space-size=2048
+# Pendant le build, Next importe le code de la base dans plusieurs processus en
+# parallèle. Sur un même fichier, ils se bloquent (« database is locked ») :
+# chacun reçoit donc une base en mémoire. Aucune page ne lit la base au build,
+# et cette variable ne passe pas dans l'image finale (étape séparée).
+ENV DATABASE_PATH=:memory:
 RUN npm run build
 
 # 3. Exécution : seulement le serveur autonome, les fichiers statiques et les migrations.
