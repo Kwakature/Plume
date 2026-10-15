@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   output: "standalone",
   experimental: {
     agentFeedback: true,
+    // Les server actions (créer, renommer, sauvegarder…) sont refusées si l'adresse
+    // vue par le navigateur diffère de celle reçue par le serveur (protection CSRF).
+    // On déclare ici l'adresse du Raspberry via le VPN.
+    serverActions: {
+      allowedOrigins: ["100.124.13.32:3000", "192.168.1.103:3000"],
+    },
   },
   cacheComponents: true,
   partialPrefetching: true,
